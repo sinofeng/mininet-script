@@ -16,17 +16,16 @@ CONFIG_DIR = 'config'
 
 class SdnIpHost(Host):
     def __init__(self, name, ip, route, *args, **kwargs):
-        Host.__init__(setLogLevel, name, ip=ip, *args, **kwargs)
+        Host.__init__(self, name, ip=ip, *args, **kwargs)
 
         self.route = route
 
-    def config(self, **kwargs ):
+    def config(self, **kwargs):
         Host.config(self, **kwargs)
 
-        debug("configure route %s" % self.route)
+        debug("configuring route %s" % self.route)
 
         self.cmd('ip route add default via %s' % self.route)
-
 
 class Router(Host):
     def __init__(self, name, quaggaConfFile, zebraConfFile, intfDict, *args, **kwargs):
@@ -49,15 +48,15 @@ class Router(Host):
             for addr in attrs['ipAddrs']:
                 self.cmd('ip addr add %s dev %s' % (addr, intf))
 
-        self.cmd('/usr/lib/quagga/zebra -d -f %s -z %s/zebra%s.api -i %s/zebra%s.pid' % (
-        self.zebraConfFile, QUAGGA_RUN_DIR, self.name, QUAGGA_RUN_DIR, self.name))
-        self.cmd('/usr/lib/quagga/bgpd -d -f %s -z %s/zebra%s.api -i %s/bgpd%s.pid' % (
-        self.quaggaConfFile, QUAGGA_RUN_DIR, self.name, QUAGGA_RUN_DIR, self.name))
+        self.cmd('/usr/lib/quagga/zebra -d -f %s -z %s/zebra%s.api -i %s/zebra%s.pid' % (self.zebraConfFile, QUAGGA_RUN_DIR, self.name, QUAGGA_RUN_DIR, self.name))
+        self.cmd('/usr/lib/quagga/bgpd -d -f %s -z %s/zebra%s.api -i %s/bgpd%s.pid' % (self.quaggaConfFile, QUAGGA_RUN_DIR, self.name, QUAGGA_RUN_DIR, self.name))
+
 
     def terminate(self):
         self.cmd("ps ax | egrep 'bgpd%s.pid|zebra%s.pid' | awk '{print $1}' | xargs kill" % (self.name, self.name))
 
         Host.terminate(self)
+
 
 def checkIntf( intf ):
     "Make sure intf exists and is not configured."
@@ -77,7 +76,7 @@ class SdnIpTopo( Topo ):
 
     def build(self):
         s1 = self.addSwitch('s1', dpid='0000000000000011')
-        s2 = self.addSwitch('s1', dpid='0000000000000012')
+        s2 = self.addSwitch('s2', dpid='0000000000000012')
 
         zebraConf = '%s/zebra.conf' % CONFIG_DIR
 
@@ -108,8 +107,8 @@ class SdnIpTopo( Topo ):
         self.addLink( s2, h2 )
 
         # add interface
-        intfName= "ens224"
-        _intf = Intf(intfName, node=s1)
+        # intfName= "ens224"
+        # _intf = Intf(intfName, node=s1)
 
 topos = {'sdnip': SdnIpTopo}
 
@@ -118,6 +117,9 @@ if __name__ == '__main__':
     topo = SdnIpTopo()
 
     net = Mininet(topo=topo, controller=RemoteController)
+
+    intfName = "ens224"
+    _intf = Intf(intfName, net.getNodeByName('s2'))
 
     net.start()
 

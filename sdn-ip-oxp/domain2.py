@@ -100,7 +100,7 @@ class SdnIpTopo( Topo ):
 
         bgpEth0 = {'mac': '00:00:00:00:00:02',
                    'ipAddrs': ['10.10.11.2/24']}
-        bgpEth1 = {'ipAddrs': ['10.10.10.5/30']}
+        bgpEth1 = {'ipAddrs': ['10.10.10.5/24']}
 
         bgpIntfs = {'bgp-eth0': bgpEth0,
                     'bgp-eth1': bgpEth1}
@@ -112,7 +112,7 @@ class SdnIpTopo( Topo ):
 
         self.addLink(bgp, s3)
 
-        rootEth0 = {'ipAddrs':['10.10.10.6/30']}
+        rootEth0 = {'ipAddrs':['10.10.10.6/24']}
         rootEth1 = {'ipAddrs':['10.0.2.5/30']}
         rootHostIntfs = {'root-eth0': rootEth0,
                          'root-eth1': rootEth1}

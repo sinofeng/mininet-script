@@ -1,0 +1,62 @@
+{
+    "ports" : {
+        "of:0000000000000012/3" : {
+            "interfaces" : [
+                {
+                    "name" : "sw2-3",
+                    "ips"  : [ "10.0.1.101/24" ],
+                    "mac"  : "00:00:00:00:00:01"
+                }
+            ]
+        }
+    },
+    "apps":{
+        "org.onosproject.oxpcfg":{
+            "domain":{
+                "boot":true,
+                "id":"1",
+                "flags":1,
+                "period":10,
+                "oxpVersion":1,
+                "missSendLength":128,
+                "capabilities":255,
+                "sbpType":1,
+                "sbpVersion":4,
+                "superIp":"127.0.0.1",
+                "superPort":6688
+            },
+            "super":{
+                "boot":true,
+                "oxpVersion":1,
+                "superPort":6688
+            }
+        },
+        "org.onosproject.router" : {
+            "bgp" : {
+                "bgpSpeakers" : [
+                    {
+                        "name" : "speaker1",
+                        "connectPoint" : "of:0000000000000011/1",
+                        "peers" : [
+                            "10.0.1.1"
+                        ]
+                    }
+                ]
+            }
+        },
+       "org.onosproject.reactive.routing" : {
+            "reactiveRouting" : {
+                "ip4LocalPrefixes" : [
+                    {
+                        "ipPrefix" : "192.168.1.0/24",
+                        "type" : "PUBLIC",
+                        "gatewayIp" : "192.168.1.254"
+                    }
+                ],
+                "ip6LocalPrefixes" : [
+                ],
+                "virtualGatewayMacAddress" : "00:00:00:00:00:01"
+            }
+        }
+    }
+}

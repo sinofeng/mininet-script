@@ -72,43 +72,43 @@ def checkIntf( intf ):
 
 
 class SdnIpTopo( Topo ):
-    "SDN-IP AS1 topology"
+    "SDN-IP As3 topology"
 
     def build(self):
-        s1 = self.addSwitch('s1', dpid='0000000000000011')
-        s2 = self.addSwitch('s2', dpid='0000000000000012')
+        s3 = self.addSwitch('s3', dpid='0000000000000021')
+        s4 = self.addSwitch('s4', dpid='0000000000000022')
 
         zebraConf = '%s/zebra.conf' % CONFIG_DIR
 
-        bgpEth0 = {'mac': '00:00:00:00:00:01',
-                   'ipAddrs': ['10.0.1.101/24']}
-        bgpEth1 = {'ipAddrs': ['10.10.11.1/24']}
+        bgpEth0 = {'mac': '00:00:00:00:00:02',
+                   'ipAddrs': ['10.0.1.1/24']}
+        bgpEth1 = {'ipAddrs': ['10.10.12.1/24']}
         bgpIntfs = {'bgp-eth0': bgpEth0,
                     'bgp-eth1': bgpEth1}
 
         bgp = self.addHost("bgp", cls=Router,
-                           quaggaConfFile='%s/quagga-sdn1.conf' % CONFIG_DIR,
+                           quaggaConfFile='%s/quagga-sdn2.conf' % CONFIG_DIR,
                            zebraConfFile=zebraConf,
                            intfDict=bgpIntfs)
 
-        self.addLink( bgp, s1 )
+        self.addLink( bgp, s3 )
 
         # Connect BGP speaker to the root namespace so it can peer with ONOS
-        root = self.addHost('root', inNamespace=False, ip='10.10.11.2/24')
+        root = self.addHost('root', inNamespace=False, ip='10.10.12.2/24')
 
         self.addLink(root, bgp)
 
-        self.addLink( s1, s2 )
+        self.addLink( s3, s4 )
 
-        h1 = self.addHost('h1', cls=SdnIpHost, ip='192.168.1.1/24', route='192.168.1.254')
-        h2 = self.addHost('h2', cls=SdnIpHost, ip='192.168.1.2/24', route='192.168.1.254')
+        h1 = self.addHost('h1', cls=SdnIpHost, ip='192.168.2.1/24', route='192.168.2.254')
+        h2 = self.addHost('h2', cls=SdnIpHost, ip='192.168.2.2/24', route='192.168.2.254')
 
-        self.addLink( s1, h1 )
-        self.addLink( s2, h2 )
+        self.addLink( s3, h1 )
+        self.addLink( s4, h2 )
 
         # add interface
-        # intfName= "ens224"
-        # _intf = Intf(intfName, node=s1)
+        # intfName= "ens424"
+        # _intf = Intf(intfName, node=s3)
 
 topos = {'sdnip': SdnIpTopo}
 
@@ -118,8 +118,8 @@ if __name__ == '__main__':
 
     net = Mininet(topo=topo, controller=RemoteController)
 
-    intfName = "ens224"
-    _intf = Intf(intfName, net.getNodeByName('s2'))
+    intfName = "ens192"
+    _intf = Intf(intfName, net.getNodeByName('s4'))
 
     net.start()
 

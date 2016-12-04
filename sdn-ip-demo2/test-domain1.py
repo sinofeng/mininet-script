@@ -96,8 +96,6 @@ class SdnIpTopo( Topo ):
         # Connect BGP speaker to the root namespace so it can peer with ONOS
         root = self.addHost('root', inNamespace=False, ip='10.10.11.2/24')
 
-        self.addLink(root, bgp)
-
         self.addLink( s1, s2 )
 
         h1 = self.addHost('h1', cls=SdnIpHost, ip='192.168.1.1/24', route='192.168.1.254')
@@ -105,6 +103,9 @@ class SdnIpTopo( Topo ):
 
         self.addLink( s1, h1 )
         self.addLink( s2, h2 )
+
+        bgp_fake = self.addHost('bgp_fake', ip='10.0.1.1')
+        self.addLink(bgp_fake, s2)
 
         # add interface
         # intfName= "ens224"

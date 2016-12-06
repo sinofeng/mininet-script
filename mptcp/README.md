@@ -1,0 +1,16 @@
+# MPTCP 仿真实验
+
+标签（空格分隔）： MPTCP SDN
+
+---
+
+##说明
+使用Mininet进行MPTCP仿真实验。
+
+##重要文件/目录列表
+1. single_switch_2_hosts.py:
+单交换机，2主机。
+
+
+
+

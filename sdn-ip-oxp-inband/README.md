@@ -8,6 +8,12 @@
   用于OXP组网测试的拓扑，域间普通主机的通信由OXP协议管理，OXP协议中域间Domain控制器和Super控制器连接的建立由SDN-IP负责,并且，控制器与交换机之间以In-Band方式连接。总之：
   SDN-IP + OXP + OF(In-Band)。
 
+###1. 网络拓扑
 
+![网络拓扑图](https://raw.githubusercontent.com/paradisecr/mininet-script/master/sdn-ip-oxp-inband/assets/topo-phy.png)
+
+###2. 网络配置
+
+###3. 测试
 
 

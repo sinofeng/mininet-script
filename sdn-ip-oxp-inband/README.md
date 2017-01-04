@@ -15,7 +15,7 @@
 ###2. 网络配置
 2.1 网络规划
 
-1. __OF控制平面网络__
+__1.OF控制平面网络__
 
 OF信道网段:
 - Domain1:10.10.21.0/24
@@ -32,7 +32,7 @@ OF信道网段:
 |s3|10.10.22.11/24|
 |s4|10.10.22.12/24|
 
-2. __SDN-IP网络__
+__2.SDN-IP网络__
 
 SDN-IP网络由两部分组成:BGP对等体网络和OF平面网络.其中,BGP对等体网络为OF平面网络通告路由信息,由ONOS的SDN-IP应用负责OF平面网络的通信.
 
@@ -50,7 +50,7 @@ BGP对等体网络:
 |BGP1.iBGP|10.10.10.0/30|
 |BGP2.iBGP|10.10.10.4/30|
 
-3. OXP网络
+__3.OXP网络__
 
 |设备 |网络|网关|
 |-----|----|---|
@@ -58,7 +58,7 @@ BGP对等体网络:
 |Domain2|10.0.2.5/30|10.0.2.6|
 |Super(与Domain1在同一主机)|10.0.2.1/30|
 
-4. 数据平面网络
+__4.数据平面网络__
 
 数据平面网段:
 - Domain1: 192.168.1.0/24
@@ -73,7 +73,7 @@ BGP对等体网络:
 
 2.2 SDN-IP配置
 
-1. __BGP配置__
+__1.BGP配置__
 
 AS号:
 - Domain1:65000
@@ -134,7 +134,7 @@ log stdout
 
 ```
 
-2. __SDN-IP应用配置__
+__2.SDN-IP应用配置__
 
 需配置:
 - 域对外端口的IP用于建立eBGP对等体时的ARP代理.
@@ -152,16 +152,17 @@ Domain2的SDN-IP应用配置:
 需对控制器进行常规的OXP配置,不再赘述.
 
 ###3. 测试
-1. 启动各控制器
-2. 关闭FWD应用,开启SDN-IP应用和ReactiveRouting应用
+1.启动各控制器
+
+2.关闭FWD应用,开启SDN-IP应用和ReactiveRouting应用
 ```
 onos> app deactivate org.onosproject.fwd 
 onos> app activate org.onosproject.sdnip
 onos> app activate org.onosproject.reactive.routing
 ```
-3. 运行网络
+3.运行网络
 
-4. 检查BGP邻居建立与路由通告
+4.检查BGP邻居建立与路由通告
 
 ```
 onos> bgp-routes 
@@ -175,7 +176,7 @@ Total BGP IPv4 routes = 2
    Network            Next Hop        Origin LocalPref       MED BGP-ID
 Total BGP IPv6 routes = 0
 ```
-5. 测试OXP Domain与Super的连通性
+5.测试OXP Domain与Super的连通性
 
 在Domain主机上ping super,检查连通性.
 ```
@@ -193,13 +194,13 @@ mininet> root ping 10.0.2.1
 rtt min/avg/max/mdev = 0.148/0.165/0.181/0.015 ms
 
 ```
-6. 运行OXP应用,检查OXP信道建立情况
+6.运行OXP应用,检查OXP信道建立情况
 ```
 onos> app activate org.onosproject.oxp         
 onos> oxp-network 
 {"domainCount":2,"linkCount":2,"hostCount":4,"isLoadBalance":true,"pathComputeParam":"CAP_BW","domains":[{"id":"00:00:00:00:00:00:00:02","workMode":"Advanced","capabilityType":"bandwidth","SBPTransferMode":"Normal"},{"id":"00:00:00:00:00:00:00:01","workMode":"Advanced","capabilityType":"bandwidth","SBPTransferMode":"Normal"}]}
 ```
-6. 测试In-band方式下的数据平面通信
+7.测试In-band方式下的数据平面通信
 
 (1)域内测试
 ```

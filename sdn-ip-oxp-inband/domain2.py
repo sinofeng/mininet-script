@@ -97,7 +97,9 @@ class RootHost(Host):
             for addr in attrs['ipAddrs']:
                 self.cmd('ip addr add %s dev %s' % (addr, intf))
         self.cmd('route del default ')
-        #self.cmd('ip route add 10.103.0.0/16 via 10.103.238.1')
+        self.cmd('route del -net 10.103.89.0/24 ')
+        self.cmd('route add -net 10.103.0.0/16 dev ens160')
+        self.cmd('route add -net 10.103.0.0/16 gw 10.103.89.1')
         self.cmd('ip route add default via %s' % self.route)
 
 class SdnIpTopo( Topo ):

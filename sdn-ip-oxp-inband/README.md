@@ -72,6 +72,7 @@ BGP对等体网络:
 |H4|Domain2|192.168.2.2/24|
 
 2.2 SDN-IP配置
+
 1. __BGP配置__
 
 AS号:
@@ -199,6 +200,7 @@ onos> oxp-network
 {"domainCount":2,"linkCount":2,"hostCount":4,"isLoadBalance":true,"pathComputeParam":"CAP_BW","domains":[{"id":"00:00:00:00:00:00:00:02","workMode":"Advanced","capabilityType":"bandwidth","SBPTransferMode":"Normal"},{"id":"00:00:00:00:00:00:00:01","workMode":"Advanced","capabilityType":"bandwidth","SBPTransferMode":"Normal"}]}
 ```
 6. 测试In-band方式下的数据平面通信
+
 (1)域内测试
 ```
 mininet> h1 ping 192.168.1.1

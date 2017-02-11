@@ -43,12 +43,12 @@ def topology():
     c0 = net.addController('c0', ip='10.103.89.185', port=6633)
    # start s1 switch
     s1.start([c0])
-    s1.cmd('switch s1 start')
+   # s1.cmd('switch s1 start')
    # add flows in switch
-    s1.cmd('ovs-ofctl add-flow s1 in_port=1,actions:output=3')
-    s1.cmd('ovs-ofctl add-flow s1 in_port=2,actions:output=4')
-    s1.cmd('ovs-ofctl add-flow s1 in_port=3,actions:output=1')
-    s1.cmd('ovs-ofctl add-flow s1 in_port=4,actions:output=2')
+    #s1.cmd('ovs-ofctl add-flow s1 in_port=1,actions:output=3')
+    #s1.cmd('ovs-ofctl add-flow s1 in_port=2,actions:output=4')
+    #s1.cmd('ovs-ofctl add-flow s1 in_port=3,actions:output=1')
+    #s1.cmd('ovs-ofctl add-flow s1 in_port=4,actions:output=2')
 
 
     print "*** Running CLI"

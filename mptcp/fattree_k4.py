@@ -76,9 +76,9 @@ def throughput_test(net,out_dir='test',test_index=1, sublflow_num=1, test_type='
         client_hosts[i].cmd("iperf -c %s -t30 &" % server_hosts[i].IP())
         sleep(5)
     # 4. analyze output file, generate  aggregateData file
-    # csv_reader = csv.reader(open(out_fiile_path , encoding='utf-8'))
-    # for row in csv_reader:
-    #     print row
+    csv_reader = csv.reader(open(out_fiile_path , encoding='utf-8'))
+    for row in csv_reader:
+        print row
     # 5. generate result file.
     return out_fiile_path
 

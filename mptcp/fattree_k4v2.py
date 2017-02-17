@@ -34,7 +34,8 @@ def selectHostsPairs(hosts):
         servers.append(hosts[servers_index[i]])
     return  clients, servers
 
-def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data_step_time=1, connection_interval_time=5, connection_during_time=60):
+def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data_step_time=1, connection_interval_time=5, connection_during_time=60,
+                    client_hosts = [], server_hosts = []):
     """
     :param:net
     :param: out_dir
@@ -61,16 +62,14 @@ def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data
       average_throughput=${average_throughput}
     """
     # 1. randomly select N pairs hosts, N is the num of hosts
-    hosts = list(net.hosts)
-    N = len(hosts)
-    client_hosts, server_hosts = selectHostsPairs(hosts)
+
 
     # 2. start servers, set output file
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     out_fiile_path = "%s/%d_subflows_%s_serverdata.csv" % (out_dir, sublflow_num, test_type)
     print("Data collection interval time: %f" % data_step_time)
-    for host in hosts:
+    for host in client_hosts:
         host.cmd('killall iperf')
     for server in server_hosts:
         server.cmd("iperf -s -i %f -y C >> %s &" % (data_step_time, out_fiile_path))
@@ -138,6 +137,11 @@ def countDown(format_str='Remain time %d', remain_time=30):
 
 
 def main():
+    '''
+    1. Radomly selcect hosts and servers.
+    2. Repeat throughput test use fixed hosts.
+    :return:
+    '''
 
     # 1. declare and parse arguments
     top_dir = os.path.join("result")
@@ -162,6 +166,13 @@ def main():
     net.start()
     countDown('Pepareing for test, remain time:%d....', 10)
     net.pingAll()
+
+    hosts = list(net.hosts)
+    host_count = len(hosts)
+    client_hosts, server_hosts = selectHostsPairs(hosts)
+    random.shuffle(client_hosts)
+    c_hosts = client_hosts[0:host_count/2]
+    s_hosts = client_hosts[host_count/2: host_count]
     # 3. start evaluation
     while True:
         test_flag = readTestFlag()
@@ -185,7 +196,8 @@ def main():
             print 'Sub-test start,subflow num: %d.....' % subflow_num
             cmd_set_subflw = "echo '" + str(subflow_num) + "' > /sys/module/mptcp_fullmesh/parameters/num_subflows"
             os.popen(cmd_set_subflw)
-            throughput_test(net, test_dir, subflow_num, test_type, 1, connection_interval_time, connection_during_time)
+            throughput_test(net, test_dir, subflow_num, test_type, 1, connection_interval_time, connection_during_time,
+                            c_hosts, s_hosts)
     CLI(net)
 
     net.stop()

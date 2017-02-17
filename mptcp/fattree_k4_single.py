@@ -34,7 +34,8 @@ def selectHostsPairs(hosts):
         servers.append(hosts[servers_index[i]])
     return  clients, servers
 
-def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data_step_time=1, connection_interval_time=5, connection_during_time=60):
+def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data_step_time=1, connection_interval_time=5, connection_during_time=60,
+                    client_hosts = [], server_hosts = []):
     """
     :param:net
     :param: out_dir
@@ -61,16 +62,14 @@ def throughput_test(net, out_dir='test', sublflow_num=1, test_type='mptcp', data
       average_throughput=${average_throughput}
     """
     # 1. randomly select N pairs hosts, N is the num of hosts
-    hosts = list(net.hosts)
-    N = len(hosts)
-    client_hosts, server_hosts = selectHostsPairs(hosts)
+
 
     # 2. start servers, set output file
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     out_fiile_path = "%s/%d_subflows_%s_serverdata.csv" % (out_dir, sublflow_num, test_type)
     print("Data collection interval time: %f" % data_step_time)
-    for host in hosts:
+    for host in client_hosts:
         host.cmd('killall iperf')
     for server in server_hosts:
         server.cmd("iperf -s -i %f -y C >> %s &" % (data_step_time, out_fiile_path))
@@ -123,6 +122,10 @@ def readConnectionDuringTime():
     input = raw_input("Enter connection during time:")
     return int(input)
 
+def readFatTreeK():
+    input = raw_input("Enter k value of the FatTree:")
+    return int(input)
+
 def readTestName():
     input = raw_input("Enter test name:")
     return input
@@ -138,6 +141,11 @@ def countDown(format_str='Remain time %d', remain_time=30):
 
 
 def main():
+    '''
+    1. Radomly selcect hosts and servers.
+    2. Repeat throughput test use fixed hosts.
+    :return:
+    '''
 
     # 1. declare and parse arguments
     top_dir = os.path.join("result")
@@ -151,17 +159,31 @@ def main():
     connection_interval_time = 5
     connection_during_time = 30
     # 2. createTopo
-
-    topo = FatTreeTopo(k=4)
-    link = custom(TCLink, bw=10)  # , delay=args.delay)
+    k_value = readFatTreeK()
+    topo = FatTreeTopo(k=k_value)
+    # link = custom(TCLink, bw=10)  # , delay=args.delay)
     c0 = RemoteController(name='c0', ip='10.103.89.185',port=6633)
     #c0 = RemoteController(name='c0', ip='10.103.90.184', port=6633)
     net = Mininet(controller=c0, topo=topo,
-                  link=link, switch=OVSKernelSwitch)
+                  link=TCLink, switch=OVSKernelSwitch)
     # c0 = net.addController('c0', ip='10.103.89.185', port=6633)
     net.start()
     countDown('Pepareing for test, remain time:%d....', 10)
-    net.pingAll()
+    # net.pingAll()
+
+    hosts = list(net.hosts)
+    host_0 = hosts[0]
+    for host in hosts:
+        net.ping([host_0, host])
+    host_count = len(hosts)
+
+    client_hosts, server_hosts = selectHostsPairs(hosts)
+    # random.shuffle(client_hosts)
+    # c_hosts = client_hosts[0:host_count / 2]
+    c_hosts = client_hosts
+    # s_hosts = client_hosts[host_count / 2: host_count]
+    s_hosts = server_hosts
+
     # 3. start evaluation
     while True:
         test_flag = readTestFlag()
@@ -181,11 +203,13 @@ def main():
         os.popen("sudo touch README.md" )
         os.popen("sudo echo %s >> README.md" % test_info)
         print 'Start test ...'
-        for subflow_num in range(subflow_num_start, subflow_num_end + 1):
+
+        for subflow_num in range(subflow_num_start, subflow_num_start + 1):
             print 'Sub-test start,subflow num: %d.....' % subflow_num
             cmd_set_subflw = "echo '" + str(subflow_num) + "' > /sys/module/mptcp_fullmesh/parameters/num_subflows"
             os.popen(cmd_set_subflw)
-            throughput_test(net, test_dir, subflow_num, test_type, 1, connection_interval_time, connection_during_time)
+            throughput_test(net, test_dir, subflow_num, test_type, 1, connection_interval_time, connection_during_time,
+                            c_hosts, s_hosts)
     CLI(net)
 
     net.stop()

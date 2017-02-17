@@ -45,7 +45,7 @@ def topology():
     print "*** Starting network"
     net.build()
 
-    c0 = net.addController('c0',ip='10.103.90.184', port=6633)
+    c0 = net.addController('c0',ip='10.103.89.185', port=6633)
    # start s1 switch
     s1.start([c0])
     s2.start([c0])

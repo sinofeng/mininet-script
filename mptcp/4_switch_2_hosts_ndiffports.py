@@ -24,6 +24,8 @@ def topology():
     h2 = net.addHost( 'h2', mac='00:00:00:00:00:02', ip='10.0.0.2/24' )
     s1 = net.addSwitch( 's1' )
     s2 = net.addSwitch( 's2' )
+    s3 = net.addSwitch( 's3' )
+    s4 = net.addSwitch( 's4' )
     #s2 = net.addSwitch( 's2' )
     #c0 = net.addController( 'c0', controller=RemoteController, ip='127.0.0.1', port=6653 )
     
@@ -34,17 +36,19 @@ def topology():
     # net.addLink(h1, s1, intfName1='h1-eth1', intfName2='s1-eth2', bw=10)
 
     # net.addLink(h2, s2, intfName1='h2-eth0', intfName2='s2-eth1', bw=20)
-    net.addLink(h2, s2, bw=20)
+    net.addLink(h2, s4, bw=20)
     # net.addLink(h2, s2, intfName1='h2-eth1', intfName2='s2-eth2', bw=10)
 
     # net.addLink(s1, s2, intfName1='s1-eth2', intfName2='s2-eth2', bw=10)
     net.addLink(s1, s2, bw=10)
     # net.addLink(s1, s2, intfName1='s1-eth3', intfName2='s2-eth3', bw=10)
-    net.addLink(s1, s2, bw=10)
+    net.addLink(s1, s3, bw=10)
+    net.addLink(s4, s2, bw=10)
+    net.addLink(s4, s3, bw=10)
 
   # Commands for identifyig the second interfaces of h1 and h2 hosts
-    h1.cmd('ifconfig h1-eth1 10.0.10.1 netmask 255.255.255.0')
-    h2.cmd('ifconfig h2-eth1 10.0.10.2 netmask 255.255.255.0')
+  #   h1.cmd('ifconfig h1-eth1 10.0.10.1 netmask 255.255.255.0')
+  #   h2.cmd('ifconfig h2-eth1 10.0.10.2 netmask 255.255.255.0')
 
     print "*** Starting network"
     net.build()
@@ -53,6 +57,8 @@ def topology():
    # start s1 switch
     s1.start([c0])
     s2.start([c0])
+    s3.start([c0])
+    s4.start([c0])
    # s1.cmd('switch s1 start')
    # # add flows in switch
    #  s1.cmd('ovs-ofctl add-flow s1 in_port=1,actions:output=3')

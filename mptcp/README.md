@@ -30,7 +30,7 @@
  +-----+              +-------+
 
 ```
-2.dua_switch_2posts_ndiffports.py
+2.dua_switch_2_hosts_ndiffports.py
 ```
 +-----------------------+       +-------------------------+
 |                       +-------+                         |

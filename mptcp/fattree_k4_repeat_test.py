@@ -202,7 +202,7 @@ def main():
         testepeatTimes =  readTestRepeatTimes()
         for test_index in range(1, testepeatTimes + 1):
             client_hosts, server_hosts = selectHostsPairs(hosts)
-            random.shuffle(client_hosts)
+            # random.shuffle(client_hosts)
             # c_hosts = client_hosts[0:host_count / 2]
             c_hosts = client_hosts
             # s_hosts = client_hosts[host_count / 2: host_count]

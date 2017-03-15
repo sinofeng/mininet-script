@@ -41,7 +41,7 @@ if __name__ == '__main__':
     stdev_fig.set_title('Load jitter in random traffic')
     stdev_fig.set_xlabel('MPTCP subflow num')
     stdev_fig.set_ylabel('Load jitter')
-    stdev_fig.plot(subflow_nums, mptcp_stdevs, 'ro-', label='MPTCP-awared Load Balancer')
+    stdev_fig.plot(subfow_nums, mptcp_stdevs, 'ro-', label='MPTCP-awared Load Balancer')
     stdev_fig.plot(subflow_nums, ecmp_stdevs,  'b^-', label='Hash-based ECMP')
     stdev_fig.legend()
 
